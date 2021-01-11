@@ -1,23 +1,27 @@
-from django.core.management import color
-from django.utils import termcolors
+
+# https://stackoverflow.com/a/20170614
 import atheris
+import termcolor
 import sys
+import struct
 
-
-def color_style(evildata):
-    if color.supports_color():
-        style = color.color_style()
-        style.INFO = termcolors.make_style(fg=evildata)
-        style.BOLD = termcolors.make_style(opts=(evildata,))
-        style.URL = termcolors.make_style(fg=evildata, opts=(evildata,))
-    return style
-
-
+def ok(text, color):
+    if color == 1:
+        termcolor.cprint(text,color='red')
+    if color == 2:
+        termcolor.cprint(text,color='green')
+    else:
+        print("colored print function: color argument", color, "is not a viable argument, specify 1 or 0")
+        #raise RuntimeError
 
 def TestOneInput(data):
+	if data:
+		mydata = data
+		fdp = atheris.FuzzedDataProvider(data)
+		yourclolor = fdp.ConsumeUnicode(sys.maxsize)
+		print(data)
 
-        color_style(data)
+		ok(mydata, yourclolor)
 
 atheris.Setup(sys.argv, TestOneInput)
 atheris.Fuzz()
-
